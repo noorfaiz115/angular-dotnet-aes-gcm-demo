@@ -11,3 +11,9 @@ button { background:#70dfce; color:#0b1220; padding:14px 22px; border:0; border-
 button:disabled { opacity:.6; cursor:wait; }
 button:focus-visible { outline:3px solid white; outline-offset:4px; }
 aside { margin-top:40px; border-top:1px solid #334158; padding-top:24px; }
+.demo { margin-top:32px; display:grid; gap:14px; }
+label { font-weight:bold; }
+input { width:100%; padding:14px; border:1px solid #536680; border-radius:8px; background:#142035; color:#e5edf9; font:inherit; }
+.demo button { justify-self:start; }
+h2 { font-size:20px; margin-top:32px; }
+pre { padding:20px; border-radius:12px; background:#142035; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font-size:13px; line-height:1.6; }

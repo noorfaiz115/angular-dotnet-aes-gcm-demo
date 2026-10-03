@@ -1,27 +1,36 @@
 # AES-GCM learning project
 
-Angular client -> .NET gateway -> .NET API.
+Angular client -> .NET gateway -> .NET API. A module-by-module learning demo.
 
-## Module 1: application foundation
+## Completed modules
 
-- Angular 21 standalone client (Node 20.19+).
-- .NET 8 API at http://localhost:5200.
-- .NET 8 gateway at http://localhost:5100.
-- Angular dev server at http://localhost:4200 forwards /api to the gateway.
-- Browser health check travels through all three applications.
+1. Angular 21 standalone client, .NET 8 gateway/API, health check.
+2. AES-256-GCM encrypted echo request/response, ephemeral P-256/HKDF session, tamper and replay checks.
 
-Run in three terminals from the repository root:
+## Run locally
+
+Prerequisites: Node 20.19+ and .NET SDK 8 or newer with the .NET 8 runtime.
+
+Install client dependencies once: `cd src/client` then `npm ci`.
+
+Run each application in its own terminal from the repository root:
 
 ```powershell
 dotnet run --project src/Demo.Api
+```
+
+```powershell
 dotnet run --project src/Demo.Gateway
+```
+
+```powershell
 cd src/client
 npm start
 ```
 
-Open http://localhost:4200. Click Check connection.
+Open http://localhost:4200. Enter a message and click **Send encrypted message**. The screen displays encrypted request/response envelopes and the response decrypted inside Angular. These debug panels use synthetic echo messages; do not display credentials in them when adding authentication.
 
-Validation:
+## Verify
 
 ```powershell
 dotnet build AesGcmDemo.sln
@@ -29,10 +38,24 @@ cd src/client
 npm run build
 ```
 
-## Next modules
+With API and gateway running, from the repository root:
 
-2. AES-GCM session and encrypted request/response contract.
-3. Login and registration with hashed passwords.
-4. Automated interoperability, tamper and replay checks.
+```powershell
+node scripts/verify-transport.mjs
+```
 
-See docs/architecture.md for the encryption design. Module 1 contains no encryption or authentication yet.
+To also exercise the Angular dev proxy (with Angular running):
+
+```powershell
+$env:DEMO_URL = 'http://localhost:4200'
+node scripts/verify-transport.mjs
+Remove-Item Env:DEMO_URL
+```
+
+The script executes the actual client transport using Node Web Crypto against .NET. It checks Unicode/nested JSON round trips, replay rejection, tampered request and response tags, response request-ID binding, route binding, nonce length, unknown sessions and concurrent requests. It does not automate browser UI interactions.
+
+## Next module
+
+3. Login and registration with hashed passwords, using this encrypted transport.
+
+See [architecture](docs/architecture.md) and [Module 2 walkthrough](docs/module-2.md). This is a single-process learning demo, not a deployed identity system. HTTPS is required outside localhost. Health, session bootstrap, and protocol failures remain plaintext. Runtime patching, persistence, distributed session handling and deployment hardening are separate work.
