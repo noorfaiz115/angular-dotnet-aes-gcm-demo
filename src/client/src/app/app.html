@@ -1,0 +1,15 @@
+<main>
+  <span class="badge">MODULE 1 · FOUNDATION</span>
+  <h1>AES-GCM learning lab</h1>
+  <p>Build and understand encrypted requests and responses, one module at a time.</p>
+  <section aria-label="Application flow" class="flow">
+    <div><strong>Angular</strong><span>Client · 4200</span></div>
+    <span aria-hidden="true">→</span>
+    <div><strong>.NET Gateway</strong><span>Gateway · 5100</span></div>
+    <span aria-hidden="true">→</span>
+    <div><strong>.NET API</strong><span>Backend · 5200</span></div>
+  </section>
+  <button type="button" (click)="checkConnection()" [disabled]="busy()">{{ busy() ? 'Checking...' : 'Check connection' }}</button>
+  <p role="status">{{ status() }}</p>
+  <aside><strong>Coming next</strong><p>AES-GCM session setup, followed by encrypted login and registration. This health check is currently unencrypted.</p></aside>
+</main>
