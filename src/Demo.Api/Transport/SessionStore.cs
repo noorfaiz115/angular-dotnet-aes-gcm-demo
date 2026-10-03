@@ -49,7 +49,8 @@ public sealed class SessionStore : IDisposable
             finally { CryptographicOperations.ZeroMemory(secret); }
         }
     }
-    public Envelope Echo(Envelope envelope, string path)
+    public Envelope Echo(Envelope envelope, string path) => Process(envelope, path, payload => new { message = "Encrypted round trip successful", received = payload.Clone() });
+    public Envelope Process(Envelope envelope, string path, Func<JsonElement, object> handler)
     {
         lock (gate)
         {
@@ -73,10 +74,10 @@ public sealed class SessionStore : IDisposable
                 try
                 {
                     using var doc = JsonDocument.Parse(plaintext);
-                    result = new { message = "Encrypted round trip successful", received = doc.RootElement.Clone() };
+                    result = handler(doc.RootElement);
                 }
                 catch (JsonException) { result = new { error = "Payload must be valid JSON." }; }
-                var responseBytes = JsonSerializer.SerializeToUtf8Bytes(result);
+                var responseBytes = JsonSerializer.SerializeToUtf8Bytes(result, new JsonSerializerOptions(JsonSerializerDefaults.Web));
                 try
                 {
                     var responseNonce = RandomNumberGenerator.GetBytes(12);

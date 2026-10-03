@@ -1,3 +1,4 @@
+using Demo.Api.Auth;
 using Microsoft.AspNetCore.RateLimiting;
 using Demo.Api.Transport;
 using System.Security.Cryptography;
@@ -6,6 +7,7 @@ using System.Threading.RateLimiting;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 32768);
 builder.Services.AddSingleton<SessionStore>();
+builder.Services.AddSingleton<AuthStore>();
 builder.Services.AddRateLimiter(options => options.AddFixedWindowLimiter("bootstrap", limiter =>
 {
     limiter.PermitLimit = 30;
@@ -30,4 +32,15 @@ app.MapPost("/api/secure/echo", (Envelope envelope, SessionStore sessions) =>
     { return Results.BadRequest(new { error = "Invalid encrypted envelope." }); }
     catch (InvalidOperationException ex) { return Results.Json(new { error = ex.Message }, statusCode: 409); }
 });
+foreach (var operation in new[] { "register", "login", "me", "logout" })
+{
+    var route = "/api/auth/" + operation;
+    app.MapPost(route, (Envelope envelope, SessionStore sessions, AuthStore auth) =>
+    {
+        try { return Results.Ok(sessions.Process(envelope, route, payload => auth.Handle(operation, payload))); }
+        catch (Exception ex) when (ex is CryptographicException or FormatException or ArgumentException)
+        { return Results.BadRequest(new { error = "Invalid encrypted envelope." }); }
+        catch (InvalidOperationException ex) { return Results.Json(new { error = ex.Message }, statusCode: 409); }
+    });
+}
 app.Run();

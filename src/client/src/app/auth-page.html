@@ -1,0 +1,24 @@
+<section class="card">
+  <span class="badge">MODULE 3 · ENCRYPTED AUTHENTICATION</span>
+  <h1>{{ register ? 'Create your account' : 'Welcome back' }}</h1>
+  <p>{{ register ? 'Register, then log in to explore your protected profile.' : 'Log in with the account you registered.' }}</p>
+  <form #form="ngForm" (ngSubmit)="submit()">
+    @if (register) {
+      <label for="name">Name</label>
+      <input id="name" name="name" [(ngModel)]="name" autocomplete="name" required maxlength="80" [disabled]="busy()" />
+    }
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" email [(ngModel)]="email" autocomplete="username" required maxlength="254" [disabled]="busy()" />
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" [(ngModel)]="password" [attr.autocomplete]="register ? 'new-password' : 'current-password'" required minlength="12" maxlength="128" [disabled]="busy()" aria-describedby="password-help" />
+    <small id="password-help">Use 12–128 characters. Passwords are hashed on the API.</small>
+    @if (register) {
+      <label for="confirm">Confirm password</label>
+      <input id="confirm" name="confirm" type="password" [(ngModel)]="confirmPassword" autocomplete="new-password" required [disabled]="busy()" />
+    }
+    <button type="submit" [disabled]="form.invalid || busy()">{{ busy() ? 'Working...' : register ? 'Create account' : 'Log in' }}</button>
+  </form>
+  <p role="status" [class.success]="success()">{{ message() }}</p>
+  <a [routerLink]="register ? '/login' : '/register'">{{ register ? 'Already registered? Log in' : 'Need an account? Register' }}</a>
+  <aside>Credentials and application responses are encrypted between Angular and the API. Demo accounts reset when the API restarts.</aside>
+</section>

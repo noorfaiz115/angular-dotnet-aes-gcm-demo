@@ -1,0 +1,20 @@
+<main>
+  <span class="badge">MODULE 2 · ENCRYPTED TRANSPORT</span>
+  <h1>AES-GCM learning lab</h1>
+  <p>Follow a message from your browser to the API and back.</p>
+  <section aria-label="Application flow" class="flow">
+    <div><strong>Angular</strong><span>Encrypt / decrypt · 4200</span></div><span aria-hidden="true">→</span>
+    <div><strong>.NET Gateway</strong><span>Forward ciphertext · 5100</span></div><span aria-hidden="true">→</span>
+    <div><strong>.NET API</strong><span>Decrypt / encrypt · 5200</span></div>
+  </section>
+  <button type="button" (click)="checkConnection()" [disabled]="busy()">Check connection</button>
+  <section class="demo">
+    <label for="message">Message to encrypt</label>
+    <input id="message" #message value="Hello from Angular — नमस्ते!" maxlength="2000" />
+    <button type="button" (click)="encryptedEcho(message.value)" [disabled]="busy()">{{ busy() ? 'Working...' : 'Send encrypted message' }}</button>
+  </section>
+  <p role="status">{{ status() }}</p>
+  @if (wire()) { <h2>Encrypted payloads on the wire</h2><pre>{{ wire() }}</pre> }
+  @if (decrypted()) { <h2>Decrypted response in your browser</h2><pre>{{ decrypted() }}</pre> }
+  <aside><strong>How the session works</strong><p>Ephemeral P-256 key agreement + HKDF creates separate AES-256-GCM keys for requests and responses. Keys stay in memory. Each message has a fresh nonce and an authenticated request ID.</p><p>Health and session setup are unencrypted protocol endpoints. HTTPS is required for deployment. Login and registration now use this same encrypted transport.</p></aside>
+</main>

@@ -6,6 +6,6 @@ Module 2 implements ephemeral P-256 ECDH and HKDF-SHA256 with separate AES-256-G
 
 Each message uses a fresh 12-byte nonce and a 16-byte authentication tag. Base64 carries ciphertext, nonce and tag in JSON. Authenticated metadata binds the session, HTTP operation, request identifier and direction. Responses bind to the originating request, and replayed request IDs are rejected.
 
-Module 3 will apply this transport to login and registration. Health, session setup and failures before a trusted encryption context exists use plaintext protocol responses.
+Module 3 applies this transport to registration, login, protected profile and logout. Passwords use the ASP.NET Core Identity salted password hasher. Expiring opaque login tokens stay in browser memory and travel inside encrypted payloads; the API stores token hashes. Health, session setup and failures before a trusted encryption context exists use plaintext protocol responses.
 
 Local HTTP on localhost is a development setup. Deployment requires authenticated HTTPS, supported patched runtimes, rate limiting and persistent identity storage. Browser encryption cannot protect against malicious JavaScript executing inside the page. This implementation stores sessions in one API process; scaling out requires a deliberate shared-state strategy.

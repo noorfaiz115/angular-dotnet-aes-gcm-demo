@@ -11,7 +11,7 @@ app.MapMethods("/api/{**path}", new[] { "GET", "POST" }, async (HttpContext cont
 {
     var path = context.Request.Path.Value;
     var allowed = (context.Request.Method == "GET" && path == "/api/health") ||
-        (context.Request.Method == "POST" && (path == "/api/crypto/session" || path == "/api/secure/echo"));
+        (context.Request.Method == "POST" && (path == "/api/crypto/session" || path == "/api/secure/echo" || path == "/api/auth/register" || path == "/api/auth/login" || path == "/api/auth/me" || path == "/api/auth/logout"));
     if (!allowed) { context.Response.StatusCode = 404; return; }
     try
     {

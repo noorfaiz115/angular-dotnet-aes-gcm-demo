@@ -1,0 +1,14 @@
+:host { display:block; padding:48px 20px; }
+.card { max-width:540px; margin:auto; padding:32px; background:#142035; border:1px solid #334158; border-radius:16px; }
+.badge { color:#70dfce; font-size:11px; letter-spacing:1px; }
+h1 { font-size:32px; }
+p,small,aside { color:#aebed3; line-height:1.6; }
+form { display:grid; gap:12px; }
+label { font-weight:bold; margin-top:6px; }
+input { width:100%; padding:13px; background:#0b1220; color:#e5edf9; border:1px solid #536680; border-radius:8px; font:inherit; }
+button { background:#70dfce; color:#0b1220; padding:14px 22px; margin-top:16px; border:0; border-radius:8px; font-weight:700; cursor:pointer; }
+button:disabled { opacity:.5; cursor:default; }
+a { color:#70dfce; }
+aside { margin-top:28px; font-size:13px; border-top:1px solid #334158; padding-top:20px; }
+.success { color:#70dfce; }
+:focus-visible { outline:3px solid #70dfce; outline-offset:3px; }
