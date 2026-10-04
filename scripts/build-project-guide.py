@@ -132,4 +132,3 @@ doc.build(story,onFirstPage=footer,onLaterPages=footer)
 reader=PdfReader(OUT)
 print(f'Created {OUT}; pages={len(reader.pages)}')
 for i,page in enumerate(reader.pages,1): print(f'Page {i}: {len(page.extract_text())} characters')
-
