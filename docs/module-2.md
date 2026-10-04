@@ -46,7 +46,7 @@ The response uses `response` for the final field. Binding the path, method, ID a
 
 - src/client/src/app/encrypted-transport.ts: Web Crypto operations and envelope splitting.
 - src/Demo.Api/Transport/SessionStore.cs: session derivation, AES-GCM and replay protection.
-- src/Demo.Gateway/Program.cs: forwarding without key access.
+- src/Demo.Gateway/Services/ApiForwarder.cs: forwarding without key access; Endpoints/GatewayEndpoints.cs: allowed routes.
 - scripts/verify-transport.mjs: executable interoperability checks.
 
 Standards/API references: https://www.w3.org/TR/WebCryptoAPI/ and https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aesgcm

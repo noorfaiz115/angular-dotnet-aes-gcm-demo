@@ -1,46 +1,12 @@
-using Demo.Api.Auth;
-using Microsoft.AspNetCore.RateLimiting;
-using Demo.Api.Transport;
-using System.Security.Cryptography;
-using System.Threading.RateLimiting;
+using Demo.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 32768);
-builder.Services.AddSingleton<SessionStore>();
-builder.Services.AddSingleton<AuthStore>();
-builder.Services.AddRateLimiter(options => options.AddFixedWindowLimiter("bootstrap", limiter =>
-{
-    limiter.PermitLimit = 30;
-    limiter.Window = TimeSpan.FromMinutes(1);
-    limiter.QueueLimit = 0;
-}));
+builder.Services.AddDemoApi();
+
 var app = builder.Build();
+app.UseRouting();
 app.UseRateLimiter();
-app.Use(async (context, next) => { context.Response.Headers.CacheControl = "no-store"; await next(context); });
-app.MapGet("/api/health", () => Results.Ok(new { service = "Demo.Api", status = "healthy" }));
-app.MapPost("/api/crypto/session", (SessionRequest request, SessionStore sessions) =>
-{
-    try { return Results.Ok(sessions.Create(request)); }
-    catch (Exception ex) when (ex is CryptographicException or FormatException or ArgumentException)
-    { return Results.BadRequest(new { error = "Invalid P-256 public key." }); }
-    catch (InvalidOperationException) { return Results.StatusCode(503); }
-}).RequireRateLimiting("bootstrap");
-app.MapPost("/api/secure/echo", (Envelope envelope, SessionStore sessions) =>
-{
-    try { return Results.Ok(sessions.Echo(envelope, "/api/secure/echo")); }
-    catch (Exception ex) when (ex is CryptographicException or FormatException or ArgumentException)
-    { return Results.BadRequest(new { error = "Invalid encrypted envelope." }); }
-    catch (InvalidOperationException ex) { return Results.Json(new { error = ex.Message }, statusCode: 409); }
-});
-foreach (var operation in new[] { "register", "login", "me", "logout" })
-{
-    var route = "/api/auth/" + operation;
-    app.MapPost(route, (Envelope envelope, SessionStore sessions, AuthStore auth) =>
-    {
-        try { return Results.Ok(sessions.Process(envelope, route, payload => auth.Handle(operation, payload))); }
-        catch (Exception ex) when (ex is CryptographicException or FormatException or ArgumentException)
-        { return Results.BadRequest(new { error = "Invalid encrypted envelope." }); }
-        catch (InvalidOperationException ex) { return Results.Json(new { error = ex.Message }, statusCode: 409); }
-    });
-}
+app.UseMiddleware<NoStoreMiddleware>();
+app.MapControllers();
 app.Run();

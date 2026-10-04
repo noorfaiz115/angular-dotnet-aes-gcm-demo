@@ -8,7 +8,7 @@ public record SessionRequest(string PublicKey);
 public record SessionResponse(string SessionId, string PublicKey, string Salt, DateTimeOffset ExpiresAt);
 public record Envelope(string SessionId, string RequestId, string Nonce, string Ciphertext, string Tag);
 
-public sealed class SessionStore : IDisposable
+public sealed class SessionStore : IEncryptedSessionService, IDisposable
 {
     private sealed class Session(byte[] requestKey, byte[] responseKey, DateTimeOffset expires)
     {

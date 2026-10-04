@@ -7,6 +7,7 @@ Angular client -> .NET gateway -> .NET API. A module-by-module learning demo.
 1. Angular 21 standalone client, .NET 8 gateway/API, health check.
 2. AES-256-GCM encrypted echo request/response, ephemeral P-256/HKDF session, tamper and replay checks.
 3. Encrypted login/register, hashed passwords, protected profile and token-revoking logout.
+4. Repository pattern: controllers, services, typed repositories and gateway forwarding service.
 
 ## Run locally
 
@@ -35,6 +36,7 @@ Open http://localhost:4200/register to create an account, then log in and verify
 
 ```powershell
 dotnet build AesGcmDemo.sln
+dotnet run --project tests/Demo.RepositoryChecks
 cd src/client
 npm run build
 ```
@@ -60,5 +62,7 @@ The script executes the actual client transport using Node Web Crypto against .N
 ## Authentication
 
 Login/register are implemented. Users reset on API restart; browser refresh clears its memory-only login token. See [Module 3](docs/module-3.md) for the flow and limits.
+
+See [repository pattern and current file map](docs/module-4-repository-pattern.md). The PDF guide describes the earlier d3a2b38 baseline.
 
 See [architecture](docs/architecture.md) and [Module 2 walkthrough](docs/module-2.md). This is a single-process learning demo, not a deployed identity system. HTTPS is required outside localhost. Health, session bootstrap, and protocol failures remain plaintext. Runtime patching, persistence, distributed session handling and deployment hardening are separate work.
