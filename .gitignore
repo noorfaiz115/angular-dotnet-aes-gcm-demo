@@ -10,3 +10,4 @@
 !.env.example
 *.user
 *.log
+/tmp/pdfs/
